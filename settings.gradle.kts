@@ -1,1 +1,1 @@
-rootProject.name = "com.fylora.ktor-quick-bank"
+rootProject.name = "com.fylora.ktor-login-exposed"
