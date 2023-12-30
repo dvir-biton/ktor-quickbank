@@ -4,7 +4,9 @@ import com.fylora.auth.data.local.dao.CombinedUserDao
 import com.fylora.auth.data.local.dao.UserDao
 import com.fylora.auth.data.local.dao.UserDataDao
 import com.fylora.auth.data.local.database.DatabaseFactory
-import com.fylora.auth.data.model.*
+import com.fylora.auth.data.model.user.*
+import com.fylora.auth.data.model.user.tables.UserDataTable
+import com.fylora.auth.data.model.user.tables.UserTable
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -26,6 +28,8 @@ class CombinedUserDaoImpl(
                 UserDataTable.insert {
                     it[fullName] = userData.fullName
                     it[amountOfMoney] = userData.amountOfMoney
+                    it[description] = userData.description
+                    it[lastAccessDate] = userData.lastAccessDate
                     it[id] = user.id
                 }
             }
@@ -70,5 +74,18 @@ class CombinedUserDaoImpl(
         val userData = userDataDao.getUserDataById(user.id) ?: return@dbQuery null
 
         Pair(user, userData)
+    }
+
+    override suspend fun transferMoneyByUsername(from: String, to: String, amount: Long): Boolean = DatabaseFactory.dbQuery {
+        val fromUserId = userDao.getUserByUsername(from)?.id ?: return@dbQuery false
+        val toUserId = userDao.getUserByUsername(to)?.id ?: return@dbQuery false
+
+        try {
+            userDataDao.transferMoney(fromUserId, toUserId, amount)
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 }

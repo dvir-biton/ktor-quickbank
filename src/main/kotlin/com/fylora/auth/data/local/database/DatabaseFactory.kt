@@ -1,7 +1,7 @@
 package com.fylora.auth.data.local.database
 
-import com.fylora.auth.data.model.UserDataTable
-import com.fylora.auth.data.model.UserTable
+import com.fylora.auth.data.model.user.tables.UserDataTable
+import com.fylora.auth.data.model.user.tables.UserTable
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils

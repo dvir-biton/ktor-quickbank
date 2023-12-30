@@ -2,8 +2,9 @@ package com.fylora.auth.routes
 
 import com.fylora.auth.data.local.dao.CombinedUserDao
 import com.fylora.auth.data.local.dao.UserDao
-import com.fylora.auth.data.model.User
-import com.fylora.auth.data.model.UserData
+import com.fylora.auth.data.model.user.User
+import com.fylora.auth.data.model.user.UserData
+import com.fylora.auth.data.model.user.UserRole
 import com.fylora.auth.requests.AuthRequest
 import com.fylora.auth.requests.AuthResponse
 import com.fylora.auth.security.hashing.HashingService
@@ -66,11 +67,14 @@ fun Route.signUp(
         val user = User(
             username = request.username,
             password = saltedHash.hash,
-            salt = saltedHash.salt
+            salt = saltedHash.salt,
+            role = UserRole.User.type
         )
         val userData = UserData(
             fullName = request.username,
-            amountOfMoney = 0
+            amountOfMoney = 0,
+            description = "Welcome to QuickBank!",
+            lastAccessDate = System.currentTimeMillis()
         )
 
         val wasAcknowledged = combinedUserDao.insertUser(user, userData)
